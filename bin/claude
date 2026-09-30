@@ -40,10 +40,11 @@ esac
 
 # Cloud identity roots never reach the container: each one is covered by an
 # empty, read-only tmpfs, so the home is mounted without them. The Google Cloud
-# config dirs (~/.config/gcloud, and any ~/.config/gcloud-* profile roots) are
-# masked by default; CLAUDE_DOCKER_MASK adds more paths, space-separated.
+# config dirs (~/.config/gcloud, and any ~/.config/gcloud-* profile roots) and
+# the AWS one (~/.aws) are masked by default; CLAUDE_DOCKER_MASK adds more
+# paths, space-separated. Their CLIs run as host tools.
 masks=()
-for d in "$home"/.config/gcloud "$home"/.config/gcloud-*; do
+for d in "$home"/.config/gcloud "$home"/.config/gcloud-* "$home"/.aws; do
     [ -e "$d" ] && masks+=("$d")
 done
 for d in ${CLAUDE_DOCKER_MASK:-}; do
