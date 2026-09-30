@@ -7,8 +7,9 @@
 - Invariants of `bin/claude` — do not break them:
   - the host home is mounted at the same path and used as `HOME`
   - cloud identity roots never reach the container: the Google Cloud config
-    dirs (`~/.config/gcloud`, `~/.config/gcloud-*`) and every path in
-    `CLAUDE_DOCKER_MASK` are covered by an empty read-only tmpfs
+    dirs (`~/.config/gcloud`, `~/.config/gcloud-*`), the AWS config dir
+    (`~/.aws`) and every path in `CLAUDE_DOCKER_MASK` are covered by an empty
+    read-only tmpfs
   - the working directory is the host folder the launcher was started from;
     folders outside the home are mounted at the same path (git root if any)
   - the container is ephemeral (`--rm`) and runs as the host uid/gid
@@ -34,8 +35,8 @@
      git repo, both inside and outside the home: `pwd` and the git root must
      match the host paths, and a file written inside must appear on the host
      owned by the user
-  4. the masked identity roots are empty and read-only inside, while the rest
-     of `~/.config` is visible
+  4. the masked identity roots (`~/.config/gcloud*`, `~/.aws`) are empty and
+     read-only inside, while the rest of `~/.config` is visible
   5. start `<tmp>/claude` in a TTY (e.g. tmux) and check that the UI renders
   6. `CLAUDE_DOCKER_ENTRYPOINT=google-chrome <tmp>/claude --headless=new
      --no-sandbox --screenshot=<launch folder>/shot.png https://example.com`

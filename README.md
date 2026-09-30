@@ -57,8 +57,9 @@ tool — works inside without logging in again.
 ## Some things stay in your own timeline
 
 Your cloud identities don't get to time-travel. The Google Cloud config dirs
-(`~/.config/gcloud` and any `~/.config/gcloud-*` profile roots) are covered by
-an empty, read-only tmpfs, so your home is mounted *without* them.
+(`~/.config/gcloud` and any `~/.config/gcloud-*` profile roots) and the AWS
+one (`~/.aws`) are covered by an empty, read-only tmpfs, so your home is
+mounted *without* them.
 `CLAUDE_DOCKER_MASK` hides more paths. Anything that needs those identities
 stays on the host, where Biff can't reach it — and can still be called from
 inside, as a [host tool](#some-tools-never-leave-1985).
@@ -130,8 +131,12 @@ the host's own copy instead. List them in `~/.claude-docker/env` and re-run
 `./install.sh`:
 
 ```bash
-CLAUDE_DOCKER_HOST_TOOLS="gh hush devo"
+CLAUDE_DOCKER_HOST_TOOLS="gh hush devo aws"
 ```
+
+`aws` is the usual way to reach AWS from inside: `~/.aws` is masked, so the
+host's AWS CLI answers with the host's profiles, and a `credential_process`
+there (a secrets tool, for instance) runs on the host as well.
 
 Each name becomes a stub in the image. Run `gh` inside and the host's `gh`
 runs: on the host, in the same folder, with the environment `claude` was
